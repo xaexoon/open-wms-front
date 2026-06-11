@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="랙 현황">
+  <title>랙 현황</title>
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="28" height="28" rx="2"/>
+    <line x1="2" y1="11.3" x2="30" y2="11.3"/>
+    <line x1="2" y1="20.6" x2="30" y2="20.6"/>
+    <line x1="11.3" y1="2" x2="11.3" y2="30"/>
+    <line x1="20.6" y1="2" x2="20.6" y2="30"/>
+  </g>
+  <rect x="12.3" y="12.3" width="7" height="7" rx="1" fill="currentColor"/>
+</svg>

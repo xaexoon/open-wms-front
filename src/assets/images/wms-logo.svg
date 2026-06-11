@@ -1,0 +1,12 @@
+<svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="WMS — Warehouse System">
+  <title>WMS — Warehouse System</title>
+  <!-- Stacked box mark (tonal blue, matched to header #3696F6) -->
+  <g>
+    <rect x="8" y="38" width="30" height="30" rx="4" fill="#1E6FD0"/>
+    <rect x="42" y="38" width="30" height="30" rx="4" fill="#3696F6"/>
+    <rect x="25" y="8" width="30" height="30" rx="4" fill="#73B7FA"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="92" y="48" font-family="'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="34" font-weight="600" fill="#0F172A">WMS</text>
+  <text x="93" y="64" font-family="'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="400" letter-spacing="2" fill="#64748B">WAREHOUSE SYSTEM</text>
+</svg>
