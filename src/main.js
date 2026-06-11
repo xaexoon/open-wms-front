@@ -3,6 +3,7 @@ import Header from "./components/haeder";
 import Rack from "./pages/rack-page";
 import Item from "./pages/item-page";
 import Inventory from "./pages/inventory-page";
+import Graph from "./pages/graph-test";
 
 export default function Main() {
     return (
@@ -14,6 +15,7 @@ export default function Main() {
                     <Route path="/rack" element={<Rack />}></Route>
                     <Route path="/item" element={<Item />}></Route>
                     <Route path="/inventory" element={<Inventory />}></Route>
+                    <Route path="/graph" element={<Graph />}></Route>
                 </Routes>
             </main>
         </div>

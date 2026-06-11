@@ -3,7 +3,8 @@ const rackColorCode = {
     selectBlue: "#2c95f1",
     emptyCell: "#334155",
     fullCell: "#5DCAA5",
-    warning: "#F59E0B",
+    labelWarning: "#F59E0B",
+    cardBg: "#1E293B",
 };
 
 const itemColorCode = {
@@ -11,4 +12,10 @@ const itemColorCode = {
     inputBg: "#334155",
     searchBtnBg: " #2c95f1",
     resetBtnBg: "#334155",
+    cardBg: "#1E293B",
+};
+
+const inventoryColorCode = {
+    lableRed: "#F87171",
+    cardBg: "#1E293B",
 };

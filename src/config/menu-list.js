@@ -5,5 +5,6 @@ import { ReactComponent as MenuInventory } from "../assets/images/menu-inventory
 export const menuList = [
     { label: "랙 현황", path: "/rack", icon: MenuRack },
     { label: "품목 조회", path: "/item", icon: MenuSearch },
-    { label: "재고 관리", path: "/inventory", icon: MenuInventory },
+    { label: "재고 현황", path: "/inventory", icon: MenuInventory },
+    { label: "그래프 테스트", path: "/graph", icon: "" },
 ];

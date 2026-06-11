@@ -349,33 +349,49 @@ export default function Item() {
             {/* 현황 카드 + 목록 카드 (남는 공간 차지) */}
             <div className="flex flex-1 min-h-0 flex-col gap-[20px]">
                 {/* 현황 카드 */}
-                <div className="flex w-full h-[100px] shrink-0 gap-[20px]">
+                <div className="flex w-full h-[80px] shrink-0 gap-[20px]">
                     <div className="flex w-full h-full gap-[30px]">
                         <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[28px]">검색 품목</span>
-                            <div className="flex text-[28px] gap-[6px]">
-                                <span className="text-[#2c95f1]">15</span>
+                            <span className="text-[24px] font-bold">
+                                검색 품목
+                            </span>
+                            <div className="flex text-[24px] gap-[6px]">
+                                <span className="text-[#2c95f1] font-bold">
+                                    15
+                                </span>
                                 <span>건</span>
                             </div>
                         </div>
                         <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[28px]">총 수량</span>
-                            <div className="flex text-[28px] gap-[6px]">
-                                <span className="text-[#5DCAA5]">1,550</span>
+                            <span className="text-[24px] font-bold">
+                                총 수량
+                            </span>
+                            <div className="flex text-[24px] gap-[6px]">
+                                <span className="text-[#5DCAA5] font-bold">
+                                    1,550
+                                </span>
                                 <span>EA</span>
                             </div>
                         </div>
                         <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[28px]">재고 부족</span>
-                            <div className="flex text-[28px] gap-[6px]">
-                                <span className="text-[#F59E0B]">3</span>
+                            <span className="text-[24px] font-bold">
+                                재고 부족
+                            </span>
+                            <div className="flex text-[24px] gap-[6px]">
+                                <span className="text-[#F59E0B] font-bold">
+                                    3
+                                </span>
                                 <span>건</span>
                             </div>
                         </div>
                         <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[28px]">이상 품목</span>
-                            <div className="flex text-[28px] gap-[6px]">
-                                <span className="text-[#F87171]">2</span>
+                            <span className="text-[24px] font-bold">
+                                이상 품목
+                            </span>
+                            <div className="flex text-[24px] gap-[6px]">
+                                <span className="text-[#F87171] font-bold">
+                                    2
+                                </span>
                                 <span>건</span>
                             </div>
                         </div>

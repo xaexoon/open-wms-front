@@ -34,7 +34,7 @@ export default function Header() {
                             }`
                         }
                     >
-                        <Icon style={{ width: 60, height: 60 }} />
+                        {Icon && <Icon style={{ width: 60, height: 60 }} />}
                         <span className=" font-medium text-[22px]">
                             {label}
                         </span>
