@@ -6,12 +6,23 @@ import {
     ListboxOption,
 } from "@headlessui/react";
 
+import CommonModal from "../components/common-modal";
+
 // 고정 상수
-const rackList = ["A", "B", "C", "D", "E", "F"];
+const rackList = [
+    "입고랙#1",
+    "입고랙#2",
+    "작업랙#1",
+    "작업랙#2",
+    "출고랙#1",
+    "출고랙#2",
+];
 
 export default function Rack() {
     const [selected, setSelected] = useState(rackList[0]);
     const [cellSelected, setCellSelected] = useState("");
+    const [modal, setModal] = useState(null);
+    const closeModal = () => setModal(null);
 
     const dummyCardData = {
         totalPercent: 62.5,
@@ -217,16 +228,72 @@ export default function Rack() {
                     </div>
                     {/* 버튼 영역 */}
                     <div className="flex flex-1 justify-end gap-[20px]">
-                        <button className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B]">
+                        <button
+                            onClick={() =>
+                                setModal({
+                                    iconType: "info",
+                                    title: "새 입고 요청이 도착했습니다",
+                                    msg: (
+                                        <>
+                                            품목{" "}
+                                            <b className="text-white">
+                                                item_code_7
+                                            </b>{" "}
+                                            외 2건의 입고 요청이 대기 중입니다.
+                                        </>
+                                    ),
+                                })
+                            }
+                            className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B] cursor-pointer"
+                        >
                             알림
                         </button>
-                        <button className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B]">
+                        <button
+                            onClick={() =>
+                                setModal({
+                                    type: "confirm", // 취소 + 확인 두 버튼
+                                    iconType: "warning",
+                                    title: "WebSocket 연결이 끊어졌습니다",
+                                    msg: "실시간 랙 현황이 갱신되지 않을 수 있습니다. 다시 연결할까요?",
+                                    confirmText: "재연결",
+                                    cancelText: "닫기",
+                                    onConfirm: () => {
+                                        // reconnectWs();
+                                        setModal({
+                                            iconType: "success",
+                                            title: "재연결되었습니다",
+                                            msg: "실시간 랙 현황 수신이 재개되었습니다.",
+                                        });
+                                    },
+                                })
+                            }
+                            className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B] cursor-pointer"
+                        >
                             WS 연결 끊김
                         </button>
-                        <button className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B]">
+                        <button
+                            onClick={() =>
+                                setModal({
+                                    iconType: "danger",
+                                    title: "데이터 조회 중 오류가 발생했습니다",
+                                    msg: "랙 정보를 불러오지 못했습니다. (ERR-5021)",
+                                })
+                            }
+                            className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B] cursor-pointer"
+                        >
                             오류
                         </button>
-                        <button className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B]">
+                        <button
+                            onClick={() => {
+                                // refetchRackData();
+                                setModal({
+                                    iconType: "success",
+                                    title: "새로고침 완료",
+                                    msg: "랙 현황이 최신 상태로 갱신되었습니다.",
+                                });
+                            }}
+                            className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B] cursor-pointer"
+                        >
                             새로고침
                         </button>
                     </div>
@@ -286,13 +353,13 @@ export default function Rack() {
                 <div className="flex flex-1 flex-col h-full bg-[#1E293B] gap-[30px] p-[30px] rounded-[15px]">
                     <div className="flex justify-between px-[10px]">
                         <span className="text-[24px] text-white font-bold">
-                            {selected} RACK
+                            {selected}
                         </span>
 
                         <Listbox value={selected} onChange={setSelected}>
                             <div className="relative w-[200px]">
                                 <ListboxButton className="w-full h-[50px] px-[16px] flex items-center justify-between text-[20px] text-white bg-[#334155] rounded-[10px] cursor-pointer">
-                                    <span>{selected} RACK</span>
+                                    <span>{selected}</span>
                                     <span className="text-[#94A3B8]">▾</span>
                                 </ListboxButton>
 
@@ -303,7 +370,7 @@ export default function Rack() {
                                             value={rack}
                                             className="px-[16px] py-[12px] text-[18px] text-[#CBD5E1] cursor-pointer data-[focus]:bg-[#475569] data-[selected]:bg-[#2c95f1] data-[selected]:text-white"
                                         >
-                                            {rack} RACK
+                                            {rack}
                                         </ListboxOption>
                                     ))}
                                 </ListboxOptions>
@@ -463,6 +530,17 @@ export default function Rack() {
                     )}
                 </div>
             </div>
+            {modal && (
+                <CommonModal
+                    {...modal}
+                    onClose={closeModal}
+                    onConfirm={() => {
+                        const fn = modal.onConfirm; // 닫기 전에 콜백 보관
+                        closeModal();
+                        fn?.();
+                    }}
+                />
+            )}
         </div>
     );
 }
