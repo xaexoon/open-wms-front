@@ -7,4 +7,5 @@ export const menuList = [
     { label: "품목 조회", path: "/item", icon: MenuSearch },
     { label: "재고 현황", path: "/inventory", icon: MenuInventory },
     { label: "그래프 테스트", path: "/graph", icon: "" },
+    
 ];
