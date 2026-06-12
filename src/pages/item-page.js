@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 
 const categoryList = ["전체", "원자재", "반제품", "완제품", "부자재"];
-const statusList = ["정상", "부족", "과다", "이상"];
+const statusList = ["전체", "정상", "부족", "과다", "이상"];
 
 // 더미 데이터
 const dummyItemData = [
@@ -189,328 +189,272 @@ function statusBadge(s) {
     return map[s] || "bg-[#334155] text-[#94A3B8]";
 }
 
+// 공용 드롭다운 (한 줄 필터용)
+function FilterSelect({ value, onChange, options, width }) {
+    return (
+        <Listbox value={value} onChange={onChange}>
+            <div className={`relative h-[48px] ${width}`}>
+                <ListboxButton className="w-full h-full px-[14px] flex items-center justify-between text-[18px] text-white bg-[#334155] rounded-[10px] cursor-pointer">
+                    <span>{value}</span>
+                    <span className="text-[#94A3B8]">▾</span>
+                </ListboxButton>
+                <ListboxOptions className="absolute z-10 mt-[6px] w-full bg-[#334155] border border-[#475569] rounded-[10px] overflow-hidden shadow-lg">
+                    {options.map((opt) => (
+                        <ListboxOption
+                            key={opt}
+                            value={opt}
+                            className="px-[14px] py-[10px] text-[17px] text-[#CBD5E1] cursor-pointer data-[focus]:bg-[#475569] data-[selected]:bg-[#2c95f1] data-[selected]:text-white"
+                        >
+                            {opt}
+                        </ListboxOption>
+                    ))}
+                </ListboxOptions>
+            </div>
+        </Listbox>
+    );
+}
+
 export default function Item() {
     const [category, setCategory] = useState(categoryList[0]);
     const [status, setStatus] = useState(statusList[0]);
-    const [searchOpen, setSearchOpen] = useState(true);
 
     return (
-        <div className="flex flex-col w-full h-full gap-[20px]">
+        <div className="flex flex-col w-full h-full gap-[18px]">
             {/* 상단 타이틀 및 버튼 */}
             <div className="flex justify-between shrink-0">
                 <div className="flex flex-1 flex-col justify-center pl-[10px]">
-                    <span className="text-[20px] text-gray-400 font-bold flex items-center">
+                    <span className="text-[16px] tracking-[2px] text-gray-400 font-bold">
                         ITEM SEARCH
                     </span>
-                    <span className="text-[40px] text-white font-bold flex items-center">
+                    <span className="text-[34px] text-white font-bold leading-tight">
                         품목 조회
                     </span>
                 </div>
-                <div className="flex gap-[20px]">
-                    <button className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B]">
+                <div className="flex gap-[14px] items-center">
+                    <button className="h-[52px] px-[28px] text-[20px] text-white font-semibold rounded-[12px] bg-[#2c95f1] cursor-pointer">
                         엑셀 다운로드
                     </button>
-                    <button className="w-[160px] h-[60px] text-[24px] text-white font-semibold rounded-[15px] bg-[#1E293B]">
+                    <button className="h-[52px] px-[28px] text-[20px] text-white font-semibold rounded-[12px] bg-[#1E293B] cursor-pointer">
                         새로고침
                     </button>
                 </div>
             </div>
 
-            {/* 검색 영역 카드 */}
-            <div className="flex flex-col w-full shrink-0 bg-[#1E293B] rounded-[15px] p-[20px] gap-[20px]">
-                {/* 검색 헤더 (항상 보임) - 접기/펴기 토글 */}
-                <button
-                    onClick={() => setSearchOpen((v) => !v)}
-                    className="flex w-full items-center justify-between cursor-pointer"
-                >
-                    <span className="text-white text-[24px] font-bold">
-                        검색 조건
+            {/* 검색 조건 : 한 줄 필터 바 (접기/펴기 불필요) */}
+            <div className="flex w-full shrink-0 items-end bg-[#1E293B] rounded-[15px] px-[20px] py-[16px] gap-[14px]">
+                {/* 품목코드 / 품목명 */}
+                <div className="flex flex-1 min-w-[280px] flex-col gap-[8px]">
+                    <span className="text-[#94A3B8] text-[16px] font-semibold">
+                        품목코드 / 품목명
                     </span>
-                    <span
-                        className={`text-[#94A3B8] text-[24px] transition-transform duration-200 ${
-                            searchOpen ? "rotate-180" : "rotate-0"
-                        }`}
-                    >
-                        ▾
+                    <input
+                        placeholder="코드 또는 품목명 입력"
+                        className="h-[48px] bg-[#334155] rounded-[10px] px-[14px] text-[18px] text-white outline-none placeholder:text-[#64748B]"
+                    />
+                </div>
+
+                {/* LOT 번호 */}
+                <div className="flex flex-col gap-[8px]">
+                    <span className="text-[#94A3B8] text-[16px] font-semibold">
+                        LOT 번호
                     </span>
-                </button>
+                    <input
+                        placeholder="Lot-P000-0"
+                        className="w-[200px] h-[48px] bg-[#334155] rounded-[10px] px-[14px] text-[18px] text-white outline-none placeholder:text-[#64748B]"
+                    />
+                </div>
 
-                {/* 검색 본문 (접힘 대상) */}
-                {searchOpen && (
-                    <div className="flex flex-col gap-[20px] ">
-                        {/* 첫번째줄 */}
-                        <div className="flex gap-[20px]">
-                            <div className="flex flex-1 flex-col gap-[10px]">
-                                <span className="text-[#94A3B8] text-[24px]">
-                                    품목코드 / 품목명
-                                </span>
-                                <input className="h-[50px] bg-[#334155] rounded-[10px] px-[16px] text-[20px] text-white outline-none" />
-                            </div>
-                            <div className="flex flex-1 flex-col gap-[10px]">
-                                <span className="text-[#94A3B8] text-[24px]">
-                                    LOT 번호
-                                </span>
-                                <input className="h-[50px] bg-[#334155] rounded-[10px] px-[16px] text-[20px] text-white outline-none" />
-                            </div>
-                            <div className="flex flex-1 flex-col gap-[10px]">
-                                <span className="text-[#94A3B8] text-[24px]">
-                                    카테고리
-                                </span>
-                                <Listbox
-                                    value={category}
-                                    onChange={setCategory}
-                                >
-                                    <div className="relative h-[50px]">
-                                        <ListboxButton className="w-full h-full px-[16px] flex items-center justify-between text-[20px] text-white bg-[#334155] rounded-[10px] cursor-pointer">
-                                            <span>{category}</span>
-                                            <span className="text-[#94A3B8]">
-                                                ▾
-                                            </span>
-                                        </ListboxButton>
-                                        <ListboxOptions className="absolute z-10 mt-[6px] w-full bg-[#334155] border border-[#475569] rounded-[10px] overflow-hidden shadow-lg">
-                                            {categoryList.map((cat) => (
-                                                <ListboxOption
-                                                    key={cat}
-                                                    value={cat}
-                                                    className="px-[16px] py-[12px] text-[18px] text-[#CBD5E1] cursor-pointer data-[focus]:bg-[#475569] data-[selected]:bg-[#2c95f1] data-[selected]:text-white"
-                                                >
-                                                    {cat}
-                                                </ListboxOption>
-                                            ))}
-                                        </ListboxOptions>
-                                    </div>
-                                </Listbox>
-                            </div>
-                        </div>
+                {/* 카테고리 */}
+                <div className="flex flex-col gap-[8px]">
+                    <span className="text-[#94A3B8] text-[16px] font-semibold">
+                        카테고리
+                    </span>
+                    <FilterSelect
+                        value={category}
+                        onChange={setCategory}
+                        options={categoryList}
+                        width="w-[160px]"
+                    />
+                </div>
 
-                        {/* 두번째줄 */}
-                        <div className="flex gap-[20px]">
-                            <div className="flex flex-1 flex-col gap-[10px]">
-                                <span className="text-[#94A3B8] text-[24px]">
-                                    입고일
-                                </span>
-                                <div className="flex h-[50px] items-center">
-                                    <input
-                                        type="date"
-                                        className="flex-1 h-full bg-[#334155] rounded-[10px] px-[16px] text-[20px] text-white outline-none [color-scheme:dark]"
-                                    />
-                                    <span className="px-[20px] text-white text-[20px] flex items-center">
-                                        ~
-                                    </span>
-                                    <input
-                                        type="date"
-                                        className="flex-1 h-full bg-[#334155] rounded-[10px] px-[16px] text-[20px] text-white outline-none [color-scheme:dark]"
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex flex-1 flex-col gap-[10px]">
-                                <span className="text-[#94A3B8] text-[24px]">
-                                    재고 상태
-                                </span>
-                                <Listbox value={status} onChange={setStatus}>
-                                    <div className="relative h-[50px]">
-                                        <ListboxButton className="w-full h-full px-[16px] flex items-center justify-between text-[20px] text-white bg-[#334155] rounded-[10px] cursor-pointer">
-                                            <span>{status}</span>
-                                            <span className="text-[#94A3B8]">
-                                                ▾
-                                            </span>
-                                        </ListboxButton>
-                                        <ListboxOptions className="absolute z-10 mt-[6px] w-full bg-[#334155] border border-[#475569] rounded-[10px] overflow-hidden shadow-lg">
-                                            {statusList.map((cat) => (
-                                                <ListboxOption
-                                                    key={cat}
-                                                    value={cat}
-                                                    className="px-[16px] py-[12px] text-[18px] text-[#CBD5E1] cursor-pointer data-[focus]:bg-[#475569] data-[selected]:bg-[#2c95f1] data-[selected]:text-white"
-                                                >
-                                                    {cat}
-                                                </ListboxOption>
-                                            ))}
-                                        </ListboxOptions>
-                                    </div>
-                                </Listbox>
-                            </div>
-                            <div className="flex flex-1 flex-col gap-[10px]">
-                                {/* 라벨 자리 유지용 (버튼 높이를 옆 input과 동적으로 맞춤) */}
-                                <span className="text-[24px] invisible">.</span>
-                                <div className="flex gap-[20px] h-[50px]">
-                                    <button className="flex-1 h-full bg-[#2c95f1] text-white text-[20px] font-medium rounded-[10px] flex justify-center items-center cursor-pointer">
-                                        검색
-                                    </button>
-                                    <button className="flex-1 h-full bg-[#334155] text-white text-[20px] font-medium rounded-[10px] flex justify-center items-center cursor-pointer">
-                                        초기화
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* 현황 카드 + 목록 카드 (남는 공간 차지) */}
-            <div className="flex flex-1 min-h-0 flex-col gap-[20px]">
-                {/* 현황 카드 */}
-                <div className="flex w-full h-[80px] shrink-0 gap-[20px]">
-                    <div className="flex w-full h-full gap-[30px]">
-                        <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[24px] font-bold">
-                                검색 품목
-                            </span>
-                            <div className="flex text-[24px] gap-[6px]">
-                                <span className="text-[#2c95f1] font-bold">
-                                    15
-                                </span>
-                                <span>건</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[24px] font-bold">
-                                총 수량
-                            </span>
-                            <div className="flex text-[24px] gap-[6px]">
-                                <span className="text-[#5DCAA5] font-bold">
-                                    1,550
-                                </span>
-                                <span>EA</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[24px] font-bold">
-                                재고 부족
-                            </span>
-                            <div className="flex text-[24px] gap-[6px]">
-                                <span className="text-[#F59E0B] font-bold">
-                                    3
-                                </span>
-                                <span>건</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[20px]">
-                            <span className="text-[24px] font-bold">
-                                이상 품목
-                            </span>
-                            <div className="flex text-[24px] gap-[6px]">
-                                <span className="text-[#F87171] font-bold">
-                                    2
-                                </span>
-                                <span>건</span>
-                            </div>
-                        </div>
+                {/* 입고일 */}
+                <div className="flex flex-col gap-[8px]">
+                    <span className="text-[#94A3B8] text-[16px] font-semibold">
+                        입고일
+                    </span>
+                    <div className="flex h-[48px] items-center gap-[8px]">
+                        <input
+                            type="date"
+                            className="w-[180px] h-full bg-[#334155] rounded-[10px] px-[14px] text-[17px] text-white outline-none [color-scheme:dark]"
+                        />
+                        <span className="text-[#94A3B8] text-[18px]">~</span>
+                        <input
+                            type="date"
+                            className="w-[180px] h-full bg-[#334155] rounded-[10px] px-[14px] text-[17px] text-white outline-none [color-scheme:dark]"
+                        />
                     </div>
                 </div>
 
-                {/* 목록 카드 (가로 전체) */}
-                <div className="flex flex-1 min-h-0 w-full">
-                    <div className="flex flex-col w-full h-full bg-[#1E293B] rounded-[15px] p-[20px]">
-                        {/* 품목 타이틀 */}
-                        <div className="flex justify-between items-center shrink-0 mb-[20px] px-[4px]">
-                            <span className="text-white text-[24px] font-bold">
-                                품목 목록
-                            </span>
-                            <span className="text-[#94A3B8] text-[20px]">
-                                총 {dummyItemData.length}건
-                            </span>
-                        </div>
+                {/* 재고 상태 */}
+                <div className="flex flex-col gap-[8px]">
+                    <span className="text-[#94A3B8] text-[16px] font-semibold">
+                        재고 상태
+                    </span>
+                    <FilterSelect
+                        value={status}
+                        onChange={setStatus}
+                        options={statusList}
+                        width="w-[160px]"
+                    />
+                </div>
 
-                        {/* 테이블 */}
-                        <div className="flex-1 min-h-0 overflow-auto">
-                            <table className="w-full border-collapse">
-                                <thead className="sticky top-0 bg-[#1E293B] z-10">
-                                    <tr className="text-[#94A3B8] text-[20px] text-left border-b border-[#334155]">
-                                        <th className="py-[16px] px-[12px] font-semibold">
-                                            No
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold">
-                                            품목코드
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold">
-                                            품목명
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold">
-                                            LOT 번호
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold text-right">
-                                            수량
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold text-center">
-                                            로케이션
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold">
-                                            카테고리
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold">
-                                            입고일
-                                        </th>
-                                        <th className="py-[16px] px-[12px] font-semibold text-center">
-                                            상태
-                                        </th>
+                {/* 검색 / 초기화 */}
+                <div className="flex gap-[10px] h-[48px] ml-[4px]">
+                    <button className="w-[120px] h-full bg-[#2c95f1] text-white text-[18px] font-semibold rounded-[10px] cursor-pointer">
+                        검색
+                    </button>
+                    <button className="w-[100px] h-full bg-[#334155] text-white text-[18px] font-semibold rounded-[10px] cursor-pointer">
+                        초기화
+                    </button>
+                </div>
+            </div>
+
+            {/* 검색 결과 요약 : 슬림 스트립 */}
+            <div className="flex w-full h-[64px] shrink-0 gap-[20px]">
+                <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[24px]">
+                    <span className="text-[18px] font-semibold text-[#94A3B8]">
+                        검색 품목
+                    </span>
+                    <div className="flex items-baseline gap-[6px]">
+                        <span className="text-[24px] text-[#2c95f1] font-bold">
+                            15
+                        </span>
+                        <span className="text-[16px] text-[#94A3B8]">건</span>
+                    </div>
+                </div>
+                <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[24px]">
+                    <span className="text-[18px] font-semibold text-[#94A3B8]">
+                        총 수량
+                    </span>
+                    <div className="flex items-baseline gap-[6px]">
+                        <span className="text-[24px] text-[#5DCAA5] font-bold">
+                            1,550
+                        </span>
+                        <span className="text-[16px] text-[#94A3B8]">EA</span>
+                    </div>
+                </div>
+                <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[24px]">
+                    <span className="text-[18px] font-semibold text-[#94A3B8]">
+                        재고 부족
+                    </span>
+                    <div className="flex items-baseline gap-[6px]">
+                        <span className="text-[24px] text-[#F59E0B] font-bold">
+                            3
+                        </span>
+                        <span className="text-[16px] text-[#94A3B8]">건</span>
+                    </div>
+                </div>
+                <div className="flex flex-1 bg-[#1E293B] text-white justify-between rounded-[15px] items-center px-[24px]">
+                    <span className="text-[18px] font-semibold text-[#94A3B8]">
+                        이상 품목
+                    </span>
+                    <div className="flex items-baseline gap-[6px]">
+                        <span className="text-[24px] text-[#F87171] font-bold">
+                            2
+                        </span>
+                        <span className="text-[16px] text-[#94A3B8]">건</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* 품목 목록 : 남은 높이 전부 */}
+            <div className="flex flex-1 min-h-0 w-full">
+                <div className="flex flex-col w-full h-full bg-[#1E293B] rounded-[15px] p-[20px]">
+                    <div className="flex justify-between items-center shrink-0 mb-[12px] px-[4px]">
+                        <span className="text-white text-[20px] font-bold">
+                            품목 목록
+                        </span>
+                        <span className="text-[#94A3B8] text-[16px]">
+                            총 {dummyItemData.length}건
+                        </span>
+                    </div>
+
+                    <div className="flex-1 min-h-0 overflow-auto">
+                        <table className="w-full border-collapse">
+                            <thead className="sticky top-0 bg-[#1E293B] z-10">
+                                <tr className="text-[#94A3B8] text-[16px] text-left border-b border-[#334155]">
+                                    <th className="py-[12px] px-[12px] font-semibold w-[5%]">
+                                        No
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold w-[14%]">
+                                        품목코드
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold w-[12%]">
+                                        품목명
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold w-[13%]">
+                                        LOT 번호
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold text-right w-[9%]">
+                                        수량
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold text-center w-[9%]">
+                                        로케이션
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold w-[10%]">
+                                        카테고리
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold w-[12%]">
+                                        입고일
+                                    </th>
+                                    <th className="py-[12px] px-[12px] font-semibold text-center w-[9%]">
+                                        상태
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dummyItemData.map((it) => (
+                                    <tr
+                                        key={it.itemSeq}
+                                        className="text-[17px] border-b border-[#283548] hover:bg-[#243044] cursor-pointer transition-colors"
+                                    >
+                                        <td className="py-[12px] px-[12px] text-[#94A3B8]">
+                                            {it.itemSeq}
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-white font-semibold">
+                                            {it.code}
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-[#E2E8F0]">
+                                            {it.name}
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-[#CBD5E1]">
+                                            {it.lotNum}
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-[#E2E8F0] text-right">
+                                            {it.quantity} EA
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-center">
+                                            <span className="inline-block bg-[#334155] text-[#CBD5E1] text-[15px] font-medium px-[12px] py-[4px] rounded-[8px]">
+                                                {it.location}
+                                            </span>
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-[#CBD5E1]">
+                                            {it.category}
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-[#94A3B8]">
+                                            {it.date}
+                                        </td>
+                                        <td className="py-[12px] px-[12px] text-center">
+                                            <span
+                                                className={`inline-block text-[15px] font-medium px-[14px] py-[5px] rounded-[8px] ${statusBadge(it.status)}`}
+                                            >
+                                                {it.status}
+                                            </span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {dummyItemData.map((it) => (
-                                        <tr
-                                            key={it.itemSeq}
-                                            className="text-[20px] border-b border-[#283548] hover:bg-[#243044] cursor-pointer transition-colors"
-                                        >
-                                            <td className="py-[16px] px-[12px] text-[#94A3B8]">
-                                                {it.itemSeq}
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-white font-medium">
-                                                {it.code}
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-[#E2E8F0]">
-                                                {it.name}
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-[#CBD5E1]">
-                                                {it.lotNum}
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-[#E2E8F0] text-right">
-                                                {it.quantity} EA
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-center">
-                                                <span className="inline-block bg-[#334155] text-[#CBD5E1] text-[18px] font-medium px-[12px] py-[4px] rounded-[8px]">
-                                                    {it.location}
-                                                </span>
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-[#CBD5E1]">
-                                                {it.category}
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-[#94A3B8]">
-                                                {it.date}
-                                            </td>
-                                            <td className="py-[16px] px-[12px] text-center">
-                                                <span
-                                                    className={`inline-block text-[18px] font-medium px-[14px] py-[5px] rounded-[8px] ${statusBadge(it.status)}`}
-                                                >
-                                                    {it.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* 페이지네이션 */}
-                        {/* <div className="flex justify-center items-center gap-[10px] pt-[20px] shrink-0">
-                            <button className="w-[44px] h-[44px] flex items-center justify-center text-[20px] text-[#CBD5E1] bg-[#334155] rounded-[10px] cursor-pointer">
-                                ‹
-                            </button>
-                            {[1, 2, 3].map((n) => (
-                                <button
-                                    key={n}
-                                    className={`w-[44px] h-[44px] flex items-center justify-center text-[20px] rounded-[10px] cursor-pointer ${
-                                        n === 1
-                                            ? "bg-[#2c95f1] text-white font-bold"
-                                            : "text-[#CBD5E1] bg-[#334155]"
-                                    }`}
-                                >
-                                    {n}
-                                </button>
-                            ))}
-                            <button className="w-[44px] h-[44px] flex items-center justify-center text-[20px] text-[#CBD5E1] bg-[#334155] rounded-[10px] cursor-pointer">
-                                ›
-                            </button>
-                        </div> */}
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
